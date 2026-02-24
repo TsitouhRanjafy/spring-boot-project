@@ -6,10 +6,17 @@ import com.tsitohaina.springangular.entities.PayementType;
 import com.tsitohaina.springangular.entities.Student;
 import com.tsitohaina.springangular.repository.PayementRepository;
 import com.tsitohaina.springangular.repository.StudentRepository;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -106,6 +113,18 @@ public class PayementRestController {
                     .build();
             return payementRepository.save(payment);
         } catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    // read this in navigator
+    @GetMapping(path = "payment-file/{paymentId}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public byte[] getPaymentFile(@PathVariable Long paymentId) {
+        Payement payment = payementRepository.findById(paymentId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        try {
+            return Files.readAllBytes(Path.of(URI.create(payment.getFile())));
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
