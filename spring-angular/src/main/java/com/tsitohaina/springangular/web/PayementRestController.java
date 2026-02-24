@@ -6,12 +6,16 @@ import com.tsitohaina.springangular.entities.PayementType;
 import com.tsitohaina.springangular.entities.Student;
 import com.tsitohaina.springangular.repository.PayementRepository;
 import com.tsitohaina.springangular.repository.StudentRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class PayementRestController {
@@ -62,5 +66,47 @@ public class PayementRestController {
     @GetMapping(path = "/studentsByProramId")
     public List<Student> getStudentByProgramId(@RequestParam String programId) {
         return studentRepository.findByProgramId(programId);
+    }
+
+    @PutMapping(path = "/payment/{id}")
+    public Payement updatePaymentStatus(@RequestParam PayementStatus status, Long id) {
+        Payement payment = payementRepository.findById(id).orElse(null);
+        if (payment == null)
+            throw new RuntimeException("Payment not found");
+        payment.setStatus(status);
+        return payementRepository.save(payment);
+    }
+
+    @PostMapping(path = "/payments", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Payement savePayment(@RequestParam MultipartFile file,
+                                LocalDate date,
+                                double amount,
+                                PayementType type,
+                                String studentCode) {
+        Path folderPath = Paths.get(System.getProperty("user.home"), "enset-data","payments");
+        if (!Files.exists(folderPath)) {
+            try {
+                Files.createDirectories(folderPath);
+            } catch (Exception e){
+                throw new RuntimeException("Failed to create a directory"+e.getMessage());
+            }
+        }
+        String fileName = UUID.randomUUID().toString();
+        Path filePath = Paths.get(System.getProperty("user.home"), "enset-data", "payments", fileName+".pdf");
+        try {
+            Files.copy(file.getInputStream(), filePath);
+            Student student = studentRepository.findByCode(studentCode);
+            Payement payment = Payement.builder()
+                    .date(date)
+                    .amount(amount)
+                    .type(type)
+                    .status(PayementStatus.CREATED)
+                    .file(filePath.toUri().toString())
+                    .student(student)
+                    .build();
+            return payementRepository.save(payment);
+        } catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
