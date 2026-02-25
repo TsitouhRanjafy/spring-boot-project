@@ -6,16 +6,13 @@ import com.tsitohaina.springangular.entities.PayementType;
 import com.tsitohaina.springangular.entities.Student;
 import com.tsitohaina.springangular.repository.PayementRepository;
 import com.tsitohaina.springangular.repository.StudentRepository;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
