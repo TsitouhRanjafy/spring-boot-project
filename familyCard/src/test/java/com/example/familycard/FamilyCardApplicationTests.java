@@ -8,9 +8,11 @@ import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatStream;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestRestTemplate
@@ -38,4 +40,14 @@ class FamilyCardApplicationTests {
         assertThat(amount).isNotNegative();
         assertThat(amount).isEqualTo(123.45);
     }
+
+    @Test
+    void shouldReturnACashCardWithUnknowId(){
+        ResponseEntity<String> response = this.restTemplate.getForEntity("/cashcards/1000", String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isBlank();
+    }
 }
+
+
