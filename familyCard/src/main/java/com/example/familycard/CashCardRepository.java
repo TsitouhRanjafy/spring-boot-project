@@ -1,4 +1,6 @@
 package com.example.familycard;
 
-public class CashCardRepository {
+import org.springframework.data.repository.CrudRepository;
+
+public interface CashCardRepository extends CrudRepository<CashCard, Long> {
 }
