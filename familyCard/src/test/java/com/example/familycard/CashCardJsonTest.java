@@ -1,5 +1,6 @@
 package com.example.familycard;
 
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -15,6 +16,13 @@ public class CashCardJsonTest {
 
     @Autowired
     private JacksonTester<CashCard> json;
+    @Autowired
+    private JacksonTester<CashCard[]> jsonList;
+    private final CashCard[] cashCards = Arrays.array(
+            new CashCard(99L, 123.45),
+            new CashCard(100L, 1.00),
+            new CashCard(101L, 150.00));
+
 
     @Test
     void cashCardSerializationTest() throws IOException {
@@ -37,5 +45,22 @@ public class CashCardJsonTest {
         assertThat(json.parse(expected)).isEqualTo(new CashCard(88L, 238.9));
         assertThat(json.parseObject(expected).id()).isEqualTo(88);
         assertThat(json.parseObject(expected).amount()).isEqualTo(238.9);
+    }
+
+    @Test
+    void cashCardListSerializationTest() throws IOException {
+        assertThat(jsonList.write(this.cashCards)).isStrictlyEqualToJson("list.json");
+    }
+
+    @Test
+    void cashCardListDeserializationTest() throws IOException {
+        String expected="""
+         [
+            { "id": 99, "amount": 123.45 },
+            { "id": 100, "amount": 1.00 },
+            { "id": 101, "amount": 150.00 }
+         ]
+         """;
+        assertThat(jsonList.parse(expected)).isEqualTo(this.cashCards);
     }
 }
