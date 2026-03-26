@@ -4,18 +4,19 @@
 
 **In Google Cloud console**
 
-    - create the queue
+ - create the queue
+
 ```bash
 gcloud tasks queues create queue-name --location=zone
 ```
 
-    - get detail
+ - get detail
 
 ```bash
 gcloud tasks queues describe queue-name --location=zone
 ```
     
-    - create a key for a service account Cloud Task Creator Role    
+ - create a key for a service account Cloud Task Creator Role    
 
 **Set up the environment**
 
