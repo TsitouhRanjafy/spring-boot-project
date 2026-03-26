@@ -33,7 +33,3 @@ export GCP_QUEUE_ID=queue-id
 ./mvnw spring-boot:run
 ```
 
-export GOOGLE_APPLICATION_CREDENTIALS=/home/clearmind/Downloads/qwiklabs-gcp-02-cfc34c7aa125-4cd95a8899f1.json
-export GOOGLE_CLOUD_PROJECT=qwiklabs-gcp-02-cfc34c7aa125
-export GCP_LOCATION=us-west1
-export GCP_QUEUE_ID=queue-test
