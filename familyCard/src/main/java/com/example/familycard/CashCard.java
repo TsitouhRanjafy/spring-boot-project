@@ -15,4 +15,4 @@ import org.springframework.data.annotation.Id;
 * It is perfect for a class that not hava a complexe logic métier (DTO, API response, projection, json object)
 * But class is preferred for entity JPA, modifiable object
 * */
-public record CashCard(@Id Long id, Double amount) { }
+public record CashCard(@Id Long id, Double amount, String owner) { }
