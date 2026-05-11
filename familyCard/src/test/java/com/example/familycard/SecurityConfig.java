@@ -28,8 +28,8 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/cashcards/**")
-                        .authenticated())
-                .httpBasic(Customizer.withDefaults())
+                        .hasRole("CARD-OWNER")
+                ).httpBasic(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .build();
 
@@ -41,9 +41,14 @@ public class SecurityConfig {
         UserDetails sarah = users
                 .username("sarah1")
                 .password(passwordEncoder.encode("abc123"))
-                .roles("CARD-OWNER") // No roles for now
+                .roles("CARD-OWNER")
                 .build();
-        return new InMemoryUserDetailsManager(sarah);
+        UserDetails hankOwnsNoCards = users
+                .username("hank-owns-no-cards")
+                .password(passwordEncoder.encode("qrs456"))
+                .roles("NON-OWNER")
+                .build();
+        return new InMemoryUserDetailsManager(sarah, hankOwnsNoCards);
     }
 
     @Bean
